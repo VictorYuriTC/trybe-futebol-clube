@@ -10,4 +10,9 @@ LoginRouter.post(
   LoginController.login,
 );
 
+LoginRouter.get(
+  '/validate',
+  LoginValidation.validateUserIsAdmin,
+);
+
 export default LoginRouter;
