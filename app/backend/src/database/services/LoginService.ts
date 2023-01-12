@@ -4,17 +4,26 @@ import generateJwtToken from '../jwt/generateJwtToken';
 import Users from '../models/Users';
 
 export default class LoginService {
-  static async login({ password, email }: ILogin) {
+  static async getUserByEmail(email: string) {
     const loggedUser = await Users
       .findOne({ where: { email } });
+    return loggedUser;
+  }
 
-    if (!loggedUser) return { message: 'User doesn\'t exist' };
+  static async login({ password, email }: ILogin) {
+    const loggedUser = await this.getUserByEmail(email);
+
+    if (!loggedUser) {
+      return { message: 'Incorrect email or password', status: 401 };
+    }
 
     const isThisPasswordCorrect = await compare(password, loggedUser?.password);
 
-    if (isThisPasswordCorrect) {
-      const token = generateJwtToken({ email });
-      return token;
+    if (!isThisPasswordCorrect) {
+      return { message: 'Incorrect email or password', status: 401 };
     }
+
+    const token = generateJwtToken({ email });
+    return { token, status: 200, message: 'User successfully logged' };
   }
 }
