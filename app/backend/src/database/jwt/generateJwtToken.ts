@@ -1,7 +1,7 @@
 import { sign, Secret, SignOptions } from 'jsonwebtoken';
-import ILogin from '../interfaces/ILogin';
+import IJwtPayload from '../interfaces/IJwtPayload';
 
-const generateNewJWT = (data: ILogin) => {
+const generateJwtToken = (data: IJwtPayload) => {
   const jwtConfig = {
     expiresIn: '15d',
     algorithm: 'HS256',
@@ -18,4 +18,4 @@ const generateNewJWT = (data: ILogin) => {
   return token;
 };
 
-export default generateNewJWT;
+export default generateJwtToken;
