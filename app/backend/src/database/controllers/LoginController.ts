@@ -9,16 +9,14 @@ export default class LoginController {
   ) {
     const {
       password,
-      username,
+      email,
     } = req.body;
 
-    const loggedUser = LoginService.login({
+    const token = await LoginService.login({
       password,
-      username,
+      email,
     });
 
-    console.log(loggedUser);
-
-    return res.status(201).json({ loggedUser });
+    return res.status(200).json({ token });
   }
 }
