@@ -12,11 +12,11 @@ export default class LoginController {
       email,
     } = req.body;
 
-    const token = await LoginService.login({
+    const { token, status, message } = await LoginService.login({
       password,
       email,
     });
 
-    return res.status(200).json({ token });
+    return res.status(status).json({ token, message });
   }
 }
