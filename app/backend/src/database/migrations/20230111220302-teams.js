@@ -13,7 +13,7 @@ module.exports = {
           allowNull: false,
         },
 
-        teamName: {
+        team_name: {
           type: Sequelize.STRING,
         },
       },
