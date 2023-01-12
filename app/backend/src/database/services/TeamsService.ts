@@ -5,4 +5,9 @@ export default class TeamsService {
     const allTeams = await Teams.findAll();
     return { status: 200, allTeams, message: 'All teams successfully found' };
   }
+
+  static async getTeamById(id: number) {
+    const foundTeam = await Teams.findOne({ where: { id } });
+    return { status: 200, foundTeam, message: 'Team successfully found' };
+  }
 }
