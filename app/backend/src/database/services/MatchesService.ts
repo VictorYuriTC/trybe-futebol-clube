@@ -34,4 +34,14 @@ export default class MatchesService {
 
     return { status: 201, createdMatch, message: 'Match successfully created' };
   }
+
+  static async updateInProgressToFalse(id: number) {
+    await Matches
+      .update(
+        { inProgress: 0 },
+        { where: { id } },
+      );
+
+    return { status: 200, message: 'Finished' };
+  }
 }
