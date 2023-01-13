@@ -15,6 +15,7 @@ MatchesRouter.post(
   '/',
   authenticateJwt,
   MatchesValidation.validateTeamsAreDifferent,
+  MatchesValidation.validateTeamsExistOnDB,
   MatchesController.createNewMatchByIMatchPayload,
 );
 
