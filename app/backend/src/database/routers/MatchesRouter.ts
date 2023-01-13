@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import MatchesController from '../controllers/MatchesController';
 import authenticateJwt from '../jwt/authenticateJwt';
+import MatchesValidation from '../validations/MatchesValidation';
 
 const MatchesRouter = Router();
 
@@ -13,6 +14,7 @@ MatchesRouter.get(
 MatchesRouter.post(
   '/',
   authenticateJwt,
+  MatchesValidation.validateTeamsAreDifferent,
   MatchesController.createNewMatchByIMatchPayload,
 );
 
