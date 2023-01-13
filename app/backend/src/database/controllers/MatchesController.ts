@@ -57,4 +57,21 @@ export default class MatchesController {
     } = await MatchesService.updateInProgressToFalse(Number(id));
     return res.status(status).json(message);
   }
+
+  static async updateAmountOfGoalsInAMatch(
+    req: Request,
+    res: Response,
+    _next: NextFunction,
+  ) {
+    const { id } = req.params;
+    const {
+      status,
+      message,
+    } = await MatchesService.updateAmountOfGoalsInAMatch({
+      id,
+      ...req.body,
+    });
+
+    return res.status(status).json({ message });
+  }
 }
