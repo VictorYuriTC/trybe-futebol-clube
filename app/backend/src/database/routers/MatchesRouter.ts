@@ -5,6 +5,7 @@ const MatchesRouter = Router();
 
 MatchesRouter.get(
   '/',
+  MatchesController.getMatchesFilteredByInProgress,
   MatchesController.getAllMatches,
 );
 
