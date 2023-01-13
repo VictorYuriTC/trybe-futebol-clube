@@ -1,3 +1,4 @@
+import IMatchPayload from '../interfaces/IMatchPayload';
 import Matches from '../models/Matches';
 import Teams from '../models/Teams';
 
@@ -25,5 +26,12 @@ export default class MatchesService {
       );
 
     return { status: 200, allMatchesInProgress, message: 'Matches successfully found' };
+  }
+
+  static async createNewMatchByIMatchPayload(match: IMatchPayload) {
+    const createdMatch = await Matches
+      .create({ ...match, inProgress: 1 });
+
+    return { status: 201, createdMatch, message: 'Match successfully created' };
   }
 }
