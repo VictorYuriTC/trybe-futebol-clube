@@ -11,17 +11,22 @@ MatchesRouter.get(
   MatchesController.getAllMatches,
 );
 
+MatchesRouter.patch(
+  '/:id/finish',
+  MatchesController.updateInProgressToFalse,
+);
+
+MatchesRouter.patch(
+  '/:id',
+  MatchesController.updateAmountOfGoalsInAMatch,
+);
+
 MatchesRouter.post(
   '/',
   authenticateJwt,
   MatchesValidation.validateTeamsAreDifferent,
   MatchesValidation.validateTeamsExistOnDB,
   MatchesController.createNewMatchByIMatchPayload,
-);
-
-MatchesRouter.patch(
-  '/:id/finish',
-  MatchesController.updateInProgressToFalse,
 );
 
 export default MatchesRouter;
