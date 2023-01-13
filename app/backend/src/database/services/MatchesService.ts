@@ -2,6 +2,13 @@ import IMatchPayload from '../interfaces/IMatchPayload';
 import Matches from '../models/Matches';
 import Teams from '../models/Teams';
 
+interface IUpdateAmountOfGoalsPayload {
+  id: number
+  homeTeamGoals: number
+  awayTeamGoals: number
+
+}
+
 export default class MatchesService {
   static async getAllMatches() {
     const allMatches = await Matches
@@ -43,5 +50,22 @@ export default class MatchesService {
       );
 
     return { status: 200, message: 'Finished' };
+  }
+
+  static async updateAmountOfGoalsInAMatch({
+    id,
+    homeTeamGoals,
+    awayTeamGoals,
+  }: IUpdateAmountOfGoalsPayload) {
+    await Matches
+      .update(
+        {
+          homeTeamGoals,
+          awayTeamGoals,
+        },
+        { where: { id } },
+      );
+
+    return { status: 200, message: 'Match successfully updated' };
   }
 }
