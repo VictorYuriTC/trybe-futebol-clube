@@ -44,4 +44,17 @@ export default class MatchesController {
     } = await MatchesService.createNewMatchByIMatchPayload(req.body);
     return res.status(status).json(createdMatch);
   }
+
+  static async updateInProgressToFalse(
+    req: Request,
+    res: Response,
+    _next: NextFunction,
+  ) {
+    const { id } = req.params;
+    const {
+      status,
+      message,
+    } = await MatchesService.updateInProgressToFalse(Number(id));
+    return res.status(status).json(message);
+  }
 }
