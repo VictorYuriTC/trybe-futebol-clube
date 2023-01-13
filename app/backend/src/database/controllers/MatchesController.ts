@@ -13,4 +13,23 @@ export default class MatchesController {
 
     return res.status(status).json(allMatches);
   }
+
+  static async getMatchesFilteredByInProgress(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { inProgress } = req.query;
+
+    if (!inProgress) {
+      return next();
+    }
+
+    const {
+      allMatchesInProgress,
+      status,
+    } = await MatchesService.getMatchesFilteredByInProgress(inProgress as string);
+
+    return res.status(status).json(allMatchesInProgress);
+  }
 }
