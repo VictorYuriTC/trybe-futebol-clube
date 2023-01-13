@@ -33,22 +33,46 @@ export default class TeamsService {
 
     const totalGames = allFinishedMatchesAtHome.length;
 
-    return { status: 200, totalGames, message: 'All matches found' };
+    return { totalGames };
   }
 
   static async getTeamLossesDrawsAndVictoriesById(id: number) {
     let totalVictories = 0;
     let totalDraws = 0;
     let totalLosses = 0;
+    let totalPoints = 0;
     const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
 
     allFinishedMatchesAtHome
       .forEach((match) => {
         if (match.homeTeamGoals < match.awayTeamGoals) totalLosses += 1;
-        if (match.homeTeamGoals === match.awayTeamGoals) totalDraws += 1;
-        if (match.homeTeamGoals === match.awayTeamGoals) totalVictories += 1;
+        if (match.homeTeamGoals === match.awayTeamGoals) {
+          totalDraws += 1;
+          totalPoints += 1;
+        }
+
+        if (match.homeTeamGoals === match.awayTeamGoals) {
+          totalVictories += 1;
+          totalPoints += 3;
+        }
       });
 
-    return { status: 200, totalVictories, totalLosses, totalDraws };
+    return { totalVictories, totalLosses, totalDraws, totalPoints };
+  }
+
+  static async getTeamGoalsFavorOwnAndBalanceById(id: number) {
+    let goalsOwn = 0;
+    let goalsFavor = 0;
+    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
+
+    allFinishedMatchesAtHome
+      .forEach((match) => {
+        goalsFavor += match.homeTeamGoals;
+        goalsOwn += match.awayTeamGoals;
+      });
+
+    const goalsBalance = goalsFavor - goalsOwn;
+
+    return { goalsBalance, goalsFavor, goalsOwn };
   }
 }
