@@ -32,4 +32,16 @@ export default class MatchesController {
 
     return res.status(status).json(allMatchesInProgress);
   }
+
+  static async createNewMatchByIMatchPayload(
+    req: Request,
+    res: Response,
+    _next: NextFunction,
+  ) {
+    const {
+      createdMatch,
+      status,
+    } = await MatchesService.createNewMatchByIMatchPayload(req.body);
+    return res.status(status).json(createdMatch);
+  }
 }
