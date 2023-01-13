@@ -12,11 +12,10 @@ export default function authenticateJwt(
   if (!authorization) {
     return res.status(401).json({ message: 'Token not found' });
   }
-
-  const decode = verify(authorization, secret as Secret);
-
-  if (!decode) {
-    return res.status(401).json({ message: 'Invalid token' });
+  try {
+    verify(authorization, secret as Secret);
+  } catch (error) {
+    return res.status(401).json({ message: 'Token must be a valid token' });
   }
 
   next();
