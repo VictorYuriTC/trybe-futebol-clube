@@ -7,7 +7,13 @@ export default class LeaderboardService {
 
     const allTeamsTotalMatchesPromise = allTeams.map(async (team) => {
       const { totalGames } = await TeamsService.getTeamTotalMatchesById(team.id);
-      return { id: team.id, name: team.teamName, totalGames };
+      const {
+        totalVictories,
+        totalDraws,
+        totalLosses,
+      } = await TeamsService.getTeamLossesDrawsAndVictoriesById(team.id);
+      return {
+        id: team.id, name: team.teamName, totalGames, totalVictories, totalDraws, totalLosses };
     });
 
     const allTeamsTotalMatches = await Promise.all(allTeamsTotalMatchesPromise);
