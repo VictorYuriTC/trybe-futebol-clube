@@ -16,4 +16,9 @@ MatchesRouter.post(
   MatchesController.createNewMatchByIMatchPayload,
 );
 
+MatchesRouter.patch(
+  '/:id/finish',
+  MatchesController.updateInProgressToFalse,
+);
+
 export default MatchesRouter;
