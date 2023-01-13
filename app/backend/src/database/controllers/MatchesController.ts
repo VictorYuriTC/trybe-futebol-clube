@@ -9,8 +9,6 @@ export default class MatchesController {
   ) {
     const { allMatches, status } = await MatchesService.getAllMatches();
 
-    console.log('allMatches: ', allMatches);
-
     return res.status(status).json(allMatches);
   }
 
