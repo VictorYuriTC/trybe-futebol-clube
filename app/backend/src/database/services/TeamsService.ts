@@ -36,11 +36,21 @@ export default class TeamsService {
     return { totalGames };
   }
 
+  static async getTeamEfficiencyById(id: number) {
+    const { totalGames } = await this.getTeamTotalMatchesById(id);
+    const { totalPoints } = await this.getTeamTotalPointsById(id);
+
+    const maxPoints = totalGames * 3;
+
+    const efficiency = ((totalPoints / maxPoints) * 100).toFixed(2);
+
+    return { efficiency };
+  }
+
   static async getTeamLossesDrawsAndVictoriesById(id: number) {
     let totalVictories = 0;
     let totalDraws = 0;
     let totalLosses = 0;
-    let totalPoints = 0;
     const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
 
     allFinishedMatchesAtHome
@@ -48,16 +58,32 @@ export default class TeamsService {
         if (match.homeTeamGoals < match.awayTeamGoals) totalLosses += 1;
         if (match.homeTeamGoals === match.awayTeamGoals) {
           totalDraws += 1;
+        }
+
+        if (match.homeTeamGoals > match.awayTeamGoals) {
+          totalVictories += 1;
+        }
+      });
+
+    return { totalVictories, totalDraws, totalLosses };
+  }
+
+  static async getTeamTotalPointsById(id: number) {
+    let totalPoints = 0;
+    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
+
+    allFinishedMatchesAtHome
+      .forEach((match) => {
+        if (match.homeTeamGoals === match.awayTeamGoals) {
           totalPoints += 1;
         }
 
-        if (match.homeTeamGoals === match.awayTeamGoals) {
-          totalVictories += 1;
+        if (match.homeTeamGoals > match.awayTeamGoals) {
           totalPoints += 3;
         }
       });
 
-    return { totalVictories, totalLosses, totalDraws, totalPoints };
+    return { totalPoints };
   }
 
   static async getTeamGoalsFavorOwnAndBalanceById(id: number) {
@@ -73,6 +99,6 @@ export default class TeamsService {
 
     const goalsBalance = goalsFavor - goalsOwn;
 
-    return { goalsBalance, goalsFavor, goalsOwn };
+    return { goalsFavor, goalsOwn, goalsBalance };
   }
 }
