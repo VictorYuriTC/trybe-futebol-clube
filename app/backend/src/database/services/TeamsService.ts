@@ -13,11 +13,11 @@ export default class TeamsService {
     return { status: 200, foundTeam, message: 'Team successfully found' };
   }
 
-  static async getTeamFinishedMatchesAtHomeById(id: number) {
+  static async getTeamFinishedMatchesAtHomeById(id: number, teamType: string) {
     const allFinishedMatchesAtHome = await Matches
       .findAll({ where: {
         [Op.or]: [
-          { homeTeam: id },
+          { [`${teamType}Team`]: id },
         ],
 
         [Op.and]: [
@@ -28,32 +28,17 @@ export default class TeamsService {
     return { status: 200, allFinishedMatchesAtHome };
   }
 
-  static async getTeamFinishedMatchesAtAwayById(id: number) {
-    const allFinishedMatchesAtHome = await Matches
-      .findAll({ where: {
-        [Op.or]: [
-          { awayTeam: id },
-        ],
-
-        [Op.and]: [
-          { inProgress: 0 },
-        ],
-      } });
-
-    return { status: 200, allFinishedMatchesAtHome };
-  }
-
-  static async getTeamTotalMatchesById(id: number) {
-    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
+  static async getTeamTotalMatchesById(id: number, teamType: string) {
+    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id, teamType);
 
     const totalGames = allFinishedMatchesAtHome.length;
 
     return { totalGames };
   }
 
-  static async getTeamEfficiencyById(id: number) {
-    const { totalGames } = await this.getTeamTotalMatchesById(id);
-    const { totalPoints } = await this.getTeamTotalPointsById(id);
+  static async getTeamEfficiencyById(id: number, teamType: string) {
+    const { totalGames } = await this.getTeamTotalMatchesById(id, teamType);
+    const { totalPoints } = await this.getTeamTotalPointsById(id, teamType);
 
     const maxPoints = totalGames * 3;
 
@@ -62,11 +47,11 @@ export default class TeamsService {
     return { efficiency };
   }
 
-  static async getTeamLossesDrawsAndVictoriesById(id: number) {
+  static async getTeamLossesDrawsAndVictoriesById(id: number, teamType: string) {
     let totalVictories = 0;
     let totalDraws = 0;
     let totalLosses = 0;
-    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
+    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id, teamType);
 
     allFinishedMatchesAtHome
       .forEach((match) => {
@@ -83,9 +68,9 @@ export default class TeamsService {
     return { totalVictories, totalDraws, totalLosses };
   }
 
-  static async getTeamTotalPointsById(id: number) {
+  static async getTeamTotalPointsById(id: number, teamType: string) {
     let totalPoints = 0;
-    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
+    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id, teamType);
 
     allFinishedMatchesAtHome
       .forEach((match) => {
@@ -101,10 +86,10 @@ export default class TeamsService {
     return { totalPoints };
   }
 
-  static async getTeamGoalsFavorOwnAndBalanceById(id: number) {
+  static async getTeamGoalsFavorOwnAndBalanceById(id: number, teamType: string) {
     let goalsOwn = 0;
     let goalsFavor = 0;
-    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
+    const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id, teamType);
 
     allFinishedMatchesAtHome
       .forEach((match) => {
