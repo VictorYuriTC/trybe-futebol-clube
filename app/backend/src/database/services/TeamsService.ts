@@ -28,6 +28,21 @@ export default class TeamsService {
     return { status: 200, allFinishedMatchesAtHome };
   }
 
+  static async getTeamFinishedMatchesAtAwayById(id: number) {
+    const allFinishedMatchesAtHome = await Matches
+      .findAll({ where: {
+        [Op.or]: [
+          { awayTeam: id },
+        ],
+
+        [Op.and]: [
+          { inProgress: 0 },
+        ],
+      } });
+
+    return { status: 200, allFinishedMatchesAtHome };
+  }
+
   static async getTeamTotalMatchesById(id: number) {
     const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id);
 
