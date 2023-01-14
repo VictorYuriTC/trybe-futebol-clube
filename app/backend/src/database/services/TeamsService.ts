@@ -47,20 +47,27 @@ export default class TeamsService {
     return { efficiency };
   }
 
+  static async getTeamNameById(id: number) {
+    const teamName = await TeamsService.getTeamById(id);
+
+    return { name: teamName };
+  }
+
   static async getTeamLossesDrawsAndVictoriesById(id: number, teamType: string) {
     let totalVictories = 0;
     let totalDraws = 0;
     let totalLosses = 0;
     const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id, teamType);
+    const comparison = teamType === 'home' ? 'away' : 'home';
 
     allFinishedMatchesAtHome
-      .forEach((match) => {
-        if (match.homeTeamGoals < match.awayTeamGoals) totalLosses += 1;
-        if (match.homeTeamGoals === match.awayTeamGoals) {
+      .forEach((match: any) => {
+        if (match[`${teamType}TeamGoals`] < match[`${comparison}TeamGoals`]) totalLosses += 1;
+        if (match[`${teamType}TeamGoals`] === match[`${comparison}TeamGoals`]) {
           totalDraws += 1;
         }
 
-        if (match.homeTeamGoals > match.awayTeamGoals) {
+        if (match[`${teamType}TeamGoals`] > match[`${comparison}TeamGoals`]) {
           totalVictories += 1;
         }
       });
@@ -71,14 +78,15 @@ export default class TeamsService {
   static async getTeamTotalPointsById(id: number, teamType: string) {
     let totalPoints = 0;
     const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id, teamType);
+    const comparison = teamType === 'home' ? 'away' : 'home';
 
     allFinishedMatchesAtHome
-      .forEach((match) => {
-        if (match.homeTeamGoals === match.awayTeamGoals) {
+      .forEach((match: any) => {
+        if (match[`${teamType}TeamGoals`] === match[`${comparison}TeamGoals`]) {
           totalPoints += 1;
         }
 
-        if (match.homeTeamGoals > match.awayTeamGoals) {
+        if (match[`${teamType}TeamGoals`] > match[`${comparison}TeamGoals`]) {
           totalPoints += 3;
         }
       });
@@ -90,11 +98,11 @@ export default class TeamsService {
     let goalsOwn = 0;
     let goalsFavor = 0;
     const { allFinishedMatchesAtHome } = await this.getTeamFinishedMatchesAtHomeById(id, teamType);
-
+    const comparison = teamType === 'home' ? 'away' : 'home';
     allFinishedMatchesAtHome
-      .forEach((match) => {
-        goalsFavor += match.homeTeamGoals;
-        goalsOwn += match.awayTeamGoals;
+      .forEach((match: any) => {
+        goalsFavor += match[`${teamType}TeamGoals`];
+        goalsOwn += match[`${comparison}TeamGoals`];
       });
 
     const goalsBalance = goalsFavor - goalsOwn;
