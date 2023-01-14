@@ -5,7 +5,7 @@ const LeaderboardRouter = Router();
 
 LeaderboardRouter.get(
   '/',
-  LeaderboardController.getLeaderboard,
+  LeaderboardController.getLeaderboardForHomeTeam,
 );
 
 export default LeaderboardRouter;

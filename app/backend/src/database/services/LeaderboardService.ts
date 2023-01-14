@@ -1,18 +1,18 @@
 import TeamsService from './TeamsService';
 
 export default class LeaderboardService {
-  static async getLeaderboard() {
+  static async getLeaderboardForHomeTeam() {
     const { allTeams } = await TeamsService.getAllTeams();
 
     const allTeamsTotalMatchesPromise = allTeams.map(async (team) => {
-      const totalMatchesData = await TeamsService.getTeamTotalMatchesById(team.id);
-      const matchesResultsData = await TeamsService.getTeamLossesDrawsAndVictoriesById(team.id);
-      const goalsData = await TeamsService.getTeamGoalsFavorOwnAndBalanceById(team.id);
-      const efficiencyData = await TeamsService.getTeamEfficiencyById(team.id);
-      const { totalPoints } = await TeamsService.getTeamTotalPointsById(team.id);
+      const totalMatchesData = await TeamsService.getTeamTotalMatchesById(team.id, 'home');
+      const matchesResultsData = await TeamsService
+        .getTeamLossesDrawsAndVictoriesById(team.id, 'home');
+      const goalsData = await TeamsService.getTeamGoalsFavorOwnAndBalanceById(team.id, 'home');
+      const efficiencyData = await TeamsService.getTeamEfficiencyById(team.id, 'home');
+      const { totalPoints } = await TeamsService.getTeamTotalPointsById(team.id, 'home');
 
-      return {
-        name: team.teamName,
+      return { name: team.teamName,
         totalPoints,
         ...totalMatchesData,
         ...matchesResultsData,
