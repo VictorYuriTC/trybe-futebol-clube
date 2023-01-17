@@ -43,4 +43,16 @@ export default class LeaderboardController {
 
     return res.status(status).json(orderedTeamsTotalMatches);
   }
+
+  static async getLeaderboardForAwayAndHome(req: Request, res: Response, _next: NextFunction) {
+    const {
+      status,
+      allTeamsTotalMatches,
+    } = await LeaderboardService.getLeaderboardForAwayAndHome();
+
+    const orderedTeamsTotalMatches = await
+    orderTeamsPerPointsVictoriesAndGoals(allTeamsTotalMatches);
+
+    return res.status(status).json(orderedTeamsTotalMatches);
+  }
 }
