@@ -12,17 +12,17 @@ export default class LeaderboardService {
       const efficiencyData = await TeamsService.getTeamEfficiencyById(team.id, 'home');
       const { totalPoints } = await TeamsService.getTeamTotalPointsById(team.id, 'home');
 
-      return { name: team.teamName,
+      return {
+        name: team.teamName,
         totalPoints,
         ...totalMatchesData,
         ...matchesResultsData,
         ...goalsData,
-        ...efficiencyData,
-      };
+        ...efficiencyData };
     });
     const allTeamsTotalMatches = await Promise.all(allTeamsTotalMatchesPromise);
 
-    return { status: 200, message: 'Leaderboard successfully found', allTeamsTotalMatches };
+    return { status: 200, message: '"Home" leaderboard successfully found', allTeamsTotalMatches };
   }
 
   static async getLeaderboardForAwayTeam() {
@@ -41,11 +41,34 @@ export default class LeaderboardService {
         ...totalMatchesData,
         ...matchesResultsData,
         ...goalsData,
-        ...efficiencyData,
-      };
+        ...efficiencyData };
     });
     const allTeamsTotalMatches = await Promise.all(allTeamsTotalMatchesPromise);
 
-    return { status: 200, message: 'Leaderboard successfully found', allTeamsTotalMatches };
+    return { status: 200, message: '"Away" leaderboard successfully found', allTeamsTotalMatches };
+  }
+
+  static async getLeaderboardForAwayAndHome() {
+    const homeData = await this.getLeaderboardForHomeTeam();
+    const awayData = await this.getLeaderboardForAwayTeam();
+
+    const allTeamsTotalMatchesPromise = homeData.allTeamsTotalMatches.map(async (teamHome) => {
+      const teamAway = awayData.allTeamsTotalMatches.find((e) => teamHome.name === e.name) as any;
+      return { name: teamHome.name,
+        totalPoints: teamHome.totalPoints + teamAway.totalPoints,
+        totalGames: teamHome.totalGames + teamAway.totalGames,
+        totalVictories: teamHome.totalVictories + teamAway.totalVictories,
+        totalLosses: teamHome.totalLosses + teamAway.totalLosses,
+        totalDraws: teamHome.totalDraws + teamAway.totalDraws,
+        goalsFavor: teamHome.goalsFavor + teamAway.goalsFavor,
+        goalsOwn: teamHome.goalsOwn + teamAway.goalsOwn,
+        goalsBalance: teamHome.goalsBalance + teamAway.goalsBalance,
+        efficiency: (((teamHome.totalPoints + teamAway.totalPoints)
+        / ((teamHome.totalGames + teamAway.totalGames) * 3)) * 100).toFixed(2) };
+    });
+
+    const allTeamsTotalMatches = await Promise.all(allTeamsTotalMatchesPromise);
+
+    return { status: 200, message: 'Main leaderboard successfully found', allTeamsTotalMatches };
   }
 }
