@@ -13,4 +13,9 @@ LeaderboardRouter.get(
   LeaderboardController.getLeaderboardForAwayTeam,
 );
 
+LeaderboardRouter.get(
+  '/',
+  LeaderboardController.getLeaderboardForAwayAndHome,
+);
+
 export default LeaderboardRouter;
